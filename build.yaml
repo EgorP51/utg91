@@ -1,0 +1,20 @@
+# Code generation configuration
+targets:
+  $default:
+    builders:
+      freezed:
+        generate_for:
+          - lib/**/*.dart
+        options:
+          # Generate copyWith, equality, toString
+          union_key: type
+      json_serializable:
+        generate_for:
+          - lib/**/*.dart
+        options:
+          # Efficient JSON serialization
+          any_map: false
+          checked: false
+          create_to_json: true
+          disallow_unrecognized_keys: false
+          explicit_to_json: true
