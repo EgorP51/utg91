@@ -57,13 +57,15 @@ class MascotLocalDatasource {
   static List<Mascot> _generateMockMascots() {
     return [
       // Common mascots (40.7128° N, 74.0060° W - New York area mock coords)
+      // Common mascots - 50m interaction radius (easiest to find)
       const Mascot(
         id: '1',
         name: 'Sparky',
         description: 'A cheerful lightning mascot that loves thunderstorms',
         rarity: MascotRarity.common,
-        latitude: 40.7128,
-        longitude: -74.0060,
+        latitude: 50.270703,
+        longitude: 30.264803,
+        interactionRadius: 50.0,
       ),
       const Mascot(
         id: '2',
@@ -72,6 +74,7 @@ class MascotLocalDatasource {
         rarity: MascotRarity.common,
         latitude: 40.7580,
         longitude: -73.9855,
+        interactionRadius: 50.0,
       ),
       const Mascot(
         id: '3',
@@ -80,6 +83,7 @@ class MascotLocalDatasource {
         rarity: MascotRarity.common,
         latitude: 40.7829,
         longitude: -73.9654,
+        interactionRadius: 50.0,
       ),
       const Mascot(
         id: '4',
@@ -88,9 +92,10 @@ class MascotLocalDatasource {
         rarity: MascotRarity.common,
         latitude: 40.7489,
         longitude: -73.9680,
+        interactionRadius: 50.0,
       ),
 
-      // Rare mascots
+      // Rare mascots - 30m interaction radius (harder to find)
       const Mascot(
         id: '5',
         name: 'Frostbite',
@@ -98,6 +103,7 @@ class MascotLocalDatasource {
         rarity: MascotRarity.rare,
         latitude: 40.7614,
         longitude: -73.9776,
+        interactionRadius: 30.0,
       ),
       const Mascot(
         id: '6',
@@ -106,6 +112,7 @@ class MascotLocalDatasource {
         rarity: MascotRarity.rare,
         latitude: 40.7484,
         longitude: -73.9857,
+        interactionRadius: 30.0,
       ),
       const Mascot(
         id: '7',
@@ -114,9 +121,10 @@ class MascotLocalDatasource {
         rarity: MascotRarity.rare,
         latitude: 40.7589,
         longitude: -73.9851,
+        interactionRadius: 30.0,
       ),
 
-      // Epic mascots
+      // Epic mascots - 20m interaction radius (challenging)
       const Mascot(
         id: '8',
         name: 'Lumina',
@@ -124,6 +132,7 @@ class MascotLocalDatasource {
         rarity: MascotRarity.epic,
         latitude: 40.7558,
         longitude: -73.9865,
+        interactionRadius: 20.0,
       ),
       const Mascot(
         id: '9',
@@ -132,9 +141,10 @@ class MascotLocalDatasource {
         rarity: MascotRarity.epic,
         latitude: 40.7614,
         longitude: -73.9776,
+        interactionRadius: 20.0,
       ),
 
-      // Legendary mascots
+      // Legendary mascots - 15m interaction radius (very precise location required)
       const Mascot(
         id: '10',
         name: 'Aurora',
@@ -142,6 +152,7 @@ class MascotLocalDatasource {
         rarity: MascotRarity.legendary,
         latitude: 40.7580,
         longitude: -73.9855,
+        interactionRadius: 15.0,
       ),
       const Mascot(
         id: '11',
@@ -150,6 +161,7 @@ class MascotLocalDatasource {
         rarity: MascotRarity.legendary,
         latitude: 40.7128,
         longitude: -74.0060,
+        interactionRadius: 15.0,
       ),
       const Mascot(
         id: '12',
@@ -158,6 +170,7 @@ class MascotLocalDatasource {
         rarity: MascotRarity.legendary,
         latitude: 40.7489,
         longitude: -73.9680,
+        interactionRadius: 15.0,
       ),
     ];
   }

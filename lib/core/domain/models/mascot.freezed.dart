@@ -28,9 +28,15 @@ mixin _$Mascot {
   /// Null if locked, DateTime if unlocked
   DateTime? get unlockDate => throw _privateConstructorUsedError;
 
-  /// Optional fields for future expansion
+  /// Geolocation fields for map positioning
   double get latitude => throw _privateConstructorUsedError;
   double get longitude => throw _privateConstructorUsedError;
+
+  /// Interaction radius in meters - distance user must be within to discover
+  /// Varies by rarity: Common=50m, Rare=30m, Epic=20m, Legendary=15m
+  double get interactionRadius => throw _privateConstructorUsedError;
+
+  /// Optional fields for future expansion
   String? get imageUrl => throw _privateConstructorUsedError;
 
   /// Serializes this Mascot to a JSON map.
@@ -55,6 +61,7 @@ abstract class $MascotCopyWith<$Res> {
       DateTime? unlockDate,
       double latitude,
       double longitude,
+      double interactionRadius,
       String? imageUrl});
 }
 
@@ -80,6 +87,7 @@ class _$MascotCopyWithImpl<$Res, $Val extends Mascot>
     Object? unlockDate = freezed,
     Object? latitude = null,
     Object? longitude = null,
+    Object? interactionRadius = null,
     Object? imageUrl = freezed,
   }) {
     return _then(_value.copyWith(
@@ -111,6 +119,10 @@ class _$MascotCopyWithImpl<$Res, $Val extends Mascot>
           ? _value.longitude
           : longitude // ignore: cast_nullable_to_non_nullable
               as double,
+      interactionRadius: null == interactionRadius
+          ? _value.interactionRadius
+          : interactionRadius // ignore: cast_nullable_to_non_nullable
+              as double,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -134,6 +146,7 @@ abstract class _$$MascotImplCopyWith<$Res> implements $MascotCopyWith<$Res> {
       DateTime? unlockDate,
       double latitude,
       double longitude,
+      double interactionRadius,
       String? imageUrl});
 }
 
@@ -157,6 +170,7 @@ class __$$MascotImplCopyWithImpl<$Res>
     Object? unlockDate = freezed,
     Object? latitude = null,
     Object? longitude = null,
+    Object? interactionRadius = null,
     Object? imageUrl = freezed,
   }) {
     return _then(_$MascotImpl(
@@ -188,6 +202,10 @@ class __$$MascotImplCopyWithImpl<$Res>
           ? _value.longitude
           : longitude // ignore: cast_nullable_to_non_nullable
               as double,
+      interactionRadius: null == interactionRadius
+          ? _value.interactionRadius
+          : interactionRadius // ignore: cast_nullable_to_non_nullable
+              as double,
       imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -207,6 +225,7 @@ class _$MascotImpl implements _Mascot {
       this.unlockDate,
       this.latitude = 0.0,
       this.longitude = 0.0,
+      this.interactionRadius = 50.0,
       this.imageUrl});
 
   factory _$MascotImpl.fromJson(Map<String, dynamic> json) =>
@@ -225,19 +244,27 @@ class _$MascotImpl implements _Mascot {
   @override
   final DateTime? unlockDate;
 
-  /// Optional fields for future expansion
+  /// Geolocation fields for map positioning
   @override
   @JsonKey()
   final double latitude;
   @override
   @JsonKey()
   final double longitude;
+
+  /// Interaction radius in meters - distance user must be within to discover
+  /// Varies by rarity: Common=50m, Rare=30m, Epic=20m, Legendary=15m
+  @override
+  @JsonKey()
+  final double interactionRadius;
+
+  /// Optional fields for future expansion
   @override
   final String? imageUrl;
 
   @override
   String toString() {
-    return 'Mascot(id: $id, name: $name, description: $description, rarity: $rarity, unlockDate: $unlockDate, latitude: $latitude, longitude: $longitude, imageUrl: $imageUrl)';
+    return 'Mascot(id: $id, name: $name, description: $description, rarity: $rarity, unlockDate: $unlockDate, latitude: $latitude, longitude: $longitude, interactionRadius: $interactionRadius, imageUrl: $imageUrl)';
   }
 
   @override
@@ -256,6 +283,8 @@ class _$MascotImpl implements _Mascot {
                 other.latitude == latitude) &&
             (identical(other.longitude, longitude) ||
                 other.longitude == longitude) &&
+            (identical(other.interactionRadius, interactionRadius) ||
+                other.interactionRadius == interactionRadius) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl));
   }
@@ -263,7 +292,7 @@ class _$MascotImpl implements _Mascot {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, description, rarity,
-      unlockDate, latitude, longitude, imageUrl);
+      unlockDate, latitude, longitude, interactionRadius, imageUrl);
 
   /// Create a copy of Mascot
   /// with the given fields replaced by the non-null parameter values.
@@ -290,6 +319,7 @@ abstract class _Mascot implements Mascot {
       final DateTime? unlockDate,
       final double latitude,
       final double longitude,
+      final double interactionRadius,
       final String? imageUrl}) = _$MascotImpl;
 
   factory _Mascot.fromJson(Map<String, dynamic> json) = _$MascotImpl.fromJson;
@@ -307,11 +337,18 @@ abstract class _Mascot implements Mascot {
   @override
   DateTime? get unlockDate;
 
-  /// Optional fields for future expansion
+  /// Geolocation fields for map positioning
   @override
   double get latitude;
   @override
   double get longitude;
+
+  /// Interaction radius in meters - distance user must be within to discover
+  /// Varies by rarity: Common=50m, Rare=30m, Epic=20m, Legendary=15m
+  @override
+  double get interactionRadius;
+
+  /// Optional fields for future expansion
   @override
   String? get imageUrl;
 

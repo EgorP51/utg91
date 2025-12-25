@@ -16,6 +16,8 @@ _$MascotImpl _$$MascotImplFromJson(Map<String, dynamic> json) => _$MascotImpl(
           : DateTime.parse(json['unlockDate'] as String),
       latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
       longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+      interactionRadius:
+          (json['interactionRadius'] as num?)?.toDouble() ?? 50.0,
       imageUrl: json['imageUrl'] as String?,
     );
 
@@ -28,6 +30,7 @@ Map<String, dynamic> _$$MascotImplToJson(_$MascotImpl instance) =>
       'unlockDate': instance.unlockDate?.toIso8601String(),
       'latitude': instance.latitude,
       'longitude': instance.longitude,
+      'interactionRadius': instance.interactionRadius,
       'imageUrl': instance.imageUrl,
     };
 

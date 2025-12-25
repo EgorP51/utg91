@@ -3,19 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:utg91/core/di/injection_container.dart';
 import 'package:utg91/features/explore/presentation/cubit/explore_cubit.dart';
 import 'package:utg91/features/explore/presentation/cubit/explore_state.dart';
-import 'package:utg91/features/explore/presentation/widgets/mascot_marker.dart';
-import 'package:utg91/features/explore/presentation/widgets/mock_map_view.dart';
+import 'package:utg91/features/explore/presentation/widgets/discovered_modal.dart';
+import 'package:utg91/features/explore/presentation/widgets/discoverable_view.dart';
+import 'package:utg91/features/explore/presentation/widgets/discovering_animation.dart';
+import 'package:utg91/features/explore/presentation/widgets/explore_error_widget.dart';
+import 'package:utg91/features/explore/presentation/widgets/exploring_view.dart';
+import 'package:utg91/features/explore/presentation/widgets/location_disabled_widget.dart';
+import 'package:utg91/features/explore/presentation/widgets/permission_denied_widget.dart';
 
 /// Map Explore page - Tab 1
-/// Displays nearby mascots on a map view
-/// Architecture allows future GPS integration and real map SDKs
+/// Real GPS-based exploration with distance-based discovery
 class ExplorePage extends StatelessWidget {
   const ExplorePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<ExploreCubit>()..loadNearbyMascots(),
+      create: (_) => sl<ExploreCubit>()..initialize(),
       child: const _ExploreView(),
     );
   }
@@ -37,99 +41,96 @@ class _ExploreView extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<ExploreCubit, ExploreState>(
+      body: BlocConsumer<ExploreCubit, ExploreState>(
+        listener: (context, state) {
+          // Show modal on successful discovery
+          state.maybeWhen(
+            discovered: (mascot, lat, lng) {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => DiscoveredModal(
+                  mascot: mascot,
+                  onClose: () => Navigator.pop(context),
+                ),
+              );
+            },
+            orElse: () {},
+          );
+        },
         builder: (context, state) {
           return state.when(
-            initial: () => const Center(
-              child: Text('Initializing map...'),
-            ),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            loaded: (mascots, userLat, userLng) => Stack(
-              children: [
-                // Mock map view (replace with real map SDK in production)
-                MockMapView(
-                  userLat: userLat,
-                  userLng: userLng,
-                ),
-
-                // Mascot markers overlay
-                ...mascots.map(
-                  (mascot) => MascotMarker(
-                    mascot: mascot,
-                    userLat: userLat,
-                    userLng: userLng,
-                  ),
-                ),
-
-                // Info card at bottom
-                Positioned(
-                  bottom: 24,
-                  left: 16,
-                  right: 16,
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Nearby Mascots',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            '${mascots.length} mascots in your area',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Move around to discover more!',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            error: (message) => Center(
+            initial: () => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Error loading mascots',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    message,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
+                    Icons.explore,
+                    size: 80,
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
                   ),
                   const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () => context.read<ExploreCubit>().refresh(),
-                    child: const Text('Retry'),
+                  Text(
+                    'Ready to Explore',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: () => context.read<ExploreCubit>().initialize(),
+                    icon: const Icon(Icons.my_location),
+                    label: const Text('Start Exploring'),
                   ),
                 ],
               ),
+            ),
+            loadingLocation: () => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Getting your location...',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+            ),
+            permissionDenied: (message, isPermanent) => PermissionDeniedWidget(
+              message: message,
+              isPermanent: isPermanent,
+            ),
+            locationServiceDisabled: () => const LocationDisabledWidget(),
+            exploring: (lat, lng, mascots, distances, closest, inRange) =>
+                ExploringView(
+              userLat: lat,
+              userLng: lng,
+              allMascots: mascots,
+              mascotsWithDistance: distances,
+              closestMascot: closest,
+            ),
+            mascotDiscoverable: (lat, lng, mascots, distances, discoverable) =>
+                DiscoverableView(
+              userLat: lat,
+              userLng: lng,
+              allMascots: mascots,
+              mascotsWithDistance: distances,
+              discoverableMascot: discoverable,
+              onDiscover: () => context
+                  .read<ExploreCubit>()
+                  .discoverMascot(discoverable.mascot.id),
+            ),
+            discovering: (mascot) => DiscoveringAnimation(mascot: mascot),
+            discovered: (mascot, lat, lng) => ExploringView(
+              userLat: lat,
+              userLng: lng,
+              allMascots: const [],
+              mascotsWithDistance: const [],
+              closestMascot: null,
+            ),
+            error: (message) => ExploreErrorWidget(
+              message: message,
+              onRetry: () => context.read<ExploreCubit>().refresh(),
             ),
           );
         },

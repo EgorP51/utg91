@@ -16,9 +16,15 @@ class Mascot with _$Mascot {
     /// Null if locked, DateTime if unlocked
     DateTime? unlockDate,
 
-    /// Optional fields for future expansion
+    /// Geolocation fields for map positioning
     @Default(0.0) double latitude,
     @Default(0.0) double longitude,
+
+    /// Interaction radius in meters - distance user must be within to discover
+    /// Varies by rarity: Common=50m, Rare=30m, Epic=20m, Legendary=15m
+    @Default(50.0) double interactionRadius,
+
+    /// Optional fields for future expansion
     String? imageUrl,
   }) = _Mascot;
 

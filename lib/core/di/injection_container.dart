@@ -5,6 +5,9 @@ import 'package:utg91/core/domain/repositories/mascot_repository.dart';
 import 'package:utg91/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:utg91/features/explore/presentation/cubit/explore_cubit.dart';
 
+import '../data/services/location_service.dart';
+import '../domain/services/distance_service.dart';
+
 /// Global service locator for dependency injection
 /// Follows single responsibility: register dependencies once, retrieve anywhere
 final sl = GetIt.instance;
@@ -12,6 +15,8 @@ final sl = GetIt.instance;
 /// Initialize all dependencies
 /// Call this once at app startup before runApp
 Future<void> initializeDependencies() async {
+  sl.registerLazySingleton<LocationService>(() => LocationService());
+  sl.registerLazySingleton<DistanceService>(() => DistanceService());
   // ==================== DATA SOURCES ====================
   // Singleton: single instance shared across app
   sl.registerLazySingleton<MascotLocalDatasource>(
@@ -28,7 +33,7 @@ Future<void> initializeDependencies() async {
   // Factory: new instance per feature to avoid state conflicts
   // Each screen gets its own Cubit instance via BlocProvider
   sl.registerFactory(
-    () => ExploreCubit(sl()),
+    () => ExploreCubit(sl(), sl(), sl()),
   );
 
   sl.registerFactory(
